@@ -97,7 +97,7 @@
         console.log(id); //tosee
         function productDetail(product) {
             var element = document.getElementById("column");
-            element.innerHTML = product.description;
+            element.innerHTML = product.title + "<br>" + product.description + "<br>" + product.price ;
             for (var i = 0; i < product.images.length; i++) {
                 newProduct =document.createElement("img");
                 newProduct.src = product.images[i];
@@ -112,11 +112,31 @@
             document.documentElement.scrollTop = 0;
 
             }
-            
+          addToCart = document.createElement("button");
+          addToCart.innerHTML = "Add product to cart";
+          element.appendChild(addToCart);  
            
         }
         fetch('https://dummyjson.com/products/' + id.toString()).then(res => res.json()).then(productDetail);
         } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
        // let addItemToCart = document.createElement("button");
        // addItemToCart.innerHTML = "add to cart";
        // column.appendChild(addItemToCart);

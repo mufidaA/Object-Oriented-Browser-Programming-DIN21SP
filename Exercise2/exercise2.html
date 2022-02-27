@@ -68,10 +68,22 @@
     let allObjects;
     let shoppingCart = [];
 
-    function addIdxToCart(itemidx){
-      shoppingCart.push(itemidx);
-      count = document.getElementById("total-count");
-      count.innerHTML = shoppingCart.length;
+    function addIdxToCart(productIdx){
+      let cartIndex = -1;
+      for (let i = 0; i < shoppingCart.length; i++) {
+        console.log(i + " : " + shoppingCart[i])
+        if (productIdx == shoppingCart[i].index ) {
+          cartIndex = i;
+          break;
+        }
+      }
+      if(cartIndex>-1)
+        shoppingCart[cartIndex].count = shoppingCart[cartIndex].count + 1;
+      else
+        shoppingCart.push({index: productIdx, count: 1});
+
+      countEl = document.getElementById("total-count");
+      countEl.innerHTML = shoppingCart.length;
     }
 
     function updateHome(){ 
@@ -117,15 +129,15 @@
                 newProduct.src = product.images[i];
                 div.appendChild(newProduct);
                 if ( i < 1 ) {
-                newProduct.style.alignContent = "center";
-                newProduct.style.display="block";
+                  newProduct.style.alignContent = "center";
+                  newProduct.style.display="block";
                 }
-                else {newProduct.style.display = "inline-block";
-                newProduct.style.width = "200px";
-            }
+                else{
+                  newProduct.style.display = "inline-block";
+                  newProduct.style.width = "200px";
+              }
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
-
             }
           let cartBtn = document.createElement("div");
           div.appendChild(cartBtn);
@@ -142,12 +154,12 @@
           element.innerHTML = "";
           let total = 0 ;
           for(var i = 0; i < shoppingCart.length; i++){
-            var product = allObjects[shoppingCart[i]];
+            var product = allObjects[shoppingCart[i].index];
             let div = document.createElement("div");
-            div.innerHTML = product.title + " " + " - " + product.price + " €";
+            div.innerHTML = shoppingCart[i].count + " x " + product.title + " " + " - " + product.price + " €";
             div.style.alignContent = "flex-start";
             element.appendChild(div);
-            total += parseFloat(product.price);
+            total += parseFloat(product.price)*shoppingCart[i].count;
           }
           let divtotal = document.createElement("div");
           divtotal.innerHTML = "<br>Total price " + total + " € <br>";

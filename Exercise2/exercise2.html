@@ -144,7 +144,14 @@
           addToCart = document.createElement("button") ;
           addToCart.addEventListener("click", function(){ addIdxToCart(idx); });
           addToCart.innerHTML = "Add product to cart";      
-          cartBtn.appendChild(addToCart);  
+          cartBtn.appendChild(addToCart);
+          addToCart.style.border="2px solid #4CAF50";
+          addToCart.style.backgroundColor="black";
+          addToCart.style.color= "white";
+          addToCart.style.padding= "12px 16px"; 
+          addToCart.style.fontSize= "16px"; 
+          addToCart.style.cursor= "pointer"; 
+      
         }
           productDetail(idx);          
         }; 
@@ -157,14 +164,47 @@
             var product = allObjects[shoppingCart[i].index];
             let div = document.createElement("div");
             div.innerHTML = shoppingCart[i].count + " x " + product.title + " " + " - " + product.price + " €";
+            div.style.display= "flex";
             div.style.alignContent = "flex-start";
             element.appendChild(div);
             total += parseFloat(product.price)*shoppingCart[i].count;
           }
           let divtotal = document.createElement("div");
           divtotal.innerHTML = "<br>Total price " + total + " € <br>";
-          divtotal.style.alignContent = "flex-start";
           element.appendChild(divtotal);
+          divtotal.style.display="flex";
+          divtotal.style.alignContent = "end";
+          
+          let btn = document.createElement("div");
+          element.appendChild(btn);
+          clearCart = document.createElement("button") ;
+          clearCart.innerHTML = "Clear cart";
+          btn.appendChild(clearCart);
+          clearCart.addEventListener("click", ()=>{ shoppingCart = [];showCart();});
+          clearCart.style.border="2px solid #4CAF50";
+          clearCart.style.backgroundColor="black";
+          clearCart.style.color= "white";
+          clearCart.style.padding= "12px 16px"; 
+          clearCart.style.fontSize= "16px"; 
+          clearCart.style.cursor= "pointer"; 
+          order = document.createElement("button") ;
+          order.innerHTML = "Order";
+          btn.appendChild(order);
+          order.style.border="2px solid #4CAF50";
+          order.style.backgroundColor="black";
+          order.style.color= "white";
+          order.style.padding= "12px 16px"; 
+          order.style.fontSize= "16px"; 
+          order.style.cursor= "pointer";
+        
+          btn.style.display= "flex";
+          btn.style.columnGap= "20 px";
+          btn.style.justifyContent= "space-around";
+          btn.style.padding= "50px";
+               
+          
+      
+
           document.body.scrollTop = 0;
           document.documentElement.scrollTop = 0;
         }

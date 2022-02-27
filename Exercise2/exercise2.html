@@ -51,59 +51,74 @@
 <body>
         <div class="nav">
             <button class="btn" onclick="updateHome()"><i class="fa fa-undo fa-fw"></i></button>
-            <button class="btn"><i class="fa fa-shopping-cart"></i> (<span class="total-count"></span>)</button>
+            <button class="btn" onclick="showCart()"><i class="fa fa-shopping-cart"></i> (<span id="total-count">0</span>)</button>
             
         </div>
         <div class="container" style="padding-bottom:2000px">
             <div id="column"></div>
+
        
         </div>
+        <div class="cart" visible="false" > </div>
+
 
  
 </body>
-<script>      
-    function updateHome(){ 
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-        var element = document.getElementById("column");
-        element.innerHTML = "";
-        for (var i = 0; i <=  10 ; i++) {
-            fetch('https://dummyjson.com/products/' + i.toString()).then(res => res.json()).then(extractData); 
-        }
+<script> 
+    let allObjects;
+    let shoppingCart = [];
 
+    function addIdxToCart(itemidx){
+      shoppingCart.push(itemidx);
+      count = document.getElementById("total-count");
+      count.innerHTML = shoppingCart.length;
     }
 
-    updateHome();
+    function updateHome(){ 
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+      var element = document.getElementById("column");
+      element.innerHTML = "";
+      fetch('https://dummyjson.com/products').then(res => res.json()).then(extractData);
+    }
     
-    function extractData(product) {
-        let column = document.getElementById("column");
-            console.log(product); // to saee it
-            console.log(utlImg = product.images[0]); //to see it
-            console.log(product.brand); //to see it
-            console.log(product.description);//to see it
-            let id = product.id
-            
-        let newProduct =document.createElement("img");
-            newProduct.src = product.images[0];
-            column.appendChild(newProduct);
-            newProduct.style.height = "300px";
-        let productTitle = document.createElement("div");
-            productTitle.innerHTML = product.brand +"<br>"  + product.title;
-            column.appendChild(productTitle);
-            newProduct.addEventListener("click", function(){ productDescription(id); });
+    function extractData(objects){
+      allObjects = objects.products;
+      for (var i = 0; i <  10 ; i++) {
+          extractProduct(i);
+        }
+    }
+    
+    function extractProduct(idx) {
+      let product = allObjects[idx];
+      let id = product.id;
+      var column = document.getElementById("column");
+      let div = document.createElement("div");
+      column.appendChild(div);
+      let newProduct = document.createElement("img");
+      newProduct.src = product.images[0];
+      div.appendChild(newProduct);
+      newProduct.style.height = "300px";
+      let productTitle = document.createElement("div");
+      productTitle.innerHTML = product.brand +"<br>"  + product.title;
+      div.appendChild(productTitle);
+      newProduct.addEventListener("click", function(){ productDescription(idx); });
     };
     
-    function productDescription(id) {
-        console.log(id); //tosee
-        function productDetail(product) {
-            var element = document.getElementById("column");
-            element.innerHTML = product.title + "<br>" + product.description + "<br>" + product.price ;
+    function productDescription(idx) {
+        function productDetail(productIdx) {          
+          var product = allObjects[productIdx];
+          var element = document.getElementById("column");
+          element.innerHTML = product.title + "<br>" + product.description + "<br> Price " + product.price + " €" ;
+          let div = document.createElement("div");
+          element.appendChild(div);
             for (var i = 0; i < product.images.length; i++) {
                 newProduct =document.createElement("img");
                 newProduct.src = product.images[i];
-                element.appendChild(newProduct);
+                div.appendChild(newProduct);
                 if ( i < 1 ) {
-                newProduct.style.display = "block";
+                newProduct.style.alignContent = "center";
+                newProduct.style.display="block";
                 }
                 else {newProduct.style.display = "inline-block";
                 newProduct.style.width = "200px";
@@ -112,159 +127,37 @@
             document.documentElement.scrollTop = 0;
 
             }
-          addToCart = document.createElement("button");
-          addToCart.innerHTML = "Add product to cart";
-          element.appendChild(addToCart);  
-           
+          let cartBtn = document.createElement("div");
+          div.appendChild(cartBtn);
+          addToCart = document.createElement("button") ;
+          addToCart.addEventListener("click", function(){ addIdxToCart(idx); });
+          addToCart.innerHTML = "Add product to cart";      
+          cartBtn.appendChild(addToCart);  
         }
-        fetch('https://dummyjson.com/products/' + id.toString()).then(res => res.json()).then(productDetail);
-        } 
+          productDetail(idx);          
+        }; 
 
+        function showCart(){
+          var element = document.getElementById("column");
+          element.innerHTML = "";
+          let total = 0 ;
+          for(var i = 0; i < shoppingCart.length; i++){
+            var product = allObjects[shoppingCart[i]];
+            let div = document.createElement("div");
+            div.innerHTML = product.title + " " + " - " + product.price + " €";
+            div.style.alignContent = "flex-start";
+            element.appendChild(div);
+            total += parseFloat(product.price);
+          }
+          let divtotal = document.createElement("div");
+          divtotal.innerHTML = "<br>Total price " + total + " € <br>";
+          divtotal.style.alignContent = "flex-start";
+          element.appendChild(divtotal);
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-       // let addItemToCart = document.createElement("button");
-       // addItemToCart.innerHTML = "add to cart";
-       // column.appendChild(addItemToCart);
-
-//}
-/*
-var shoppingCart = (function() {
-// =============================
-// Private methods and propeties
-// =============================
-cart = [];
-
-// Constructor
-function Item(name, price, count) {
-this.name = name;
-this.price = price;
-this.count = count;
-}
-
-// Save cart
-function saveCart() {
-sessionStorage.setItem('shoppingCart', JSON.stringify(cart));
-}
-
-// Load cart
-function loadCart() {
-cart = JSON.parse(sessionStorage.getItem('shoppingCart'));
-}
-if (sessionStorage.getItem("shoppingCart") != null) {
-loadCart();
-}
-
-
-// =============================
-// Public methods and propeties
-// =============================
-var obj = {};
-
-// Add to cart
-obj.addItemToCart = function(name, price, count) {
-for(var item in cart) {
-  if(cart[item].name === name) {
-    cart[item].count ++;
-    saveCart();
-    return;
-  }
-}
-var item = new Item(name, price, count);
-cart.push(item);
-saveCart();
-}
-// Set count from item
-obj.setCountForItem = function(name, count) {
-for(var i in cart) {
-  if (cart[i].name === name) {
-    cart[i].count = count;
-    break;
-  }
-}
-};
-// Remove item from cart
-obj.removeItemFromCart = function(name) {
-  for(var item in cart) {
-    if(cart[item].name === name) {
-      cart[item].count --;
-      if(cart[item].count === 0) {
-        cart.splice(item, 1);
-      }
-      break;
-    }
-}
-saveCart();
-}
-
-// Remove all items from cart
-obj.removeItemFromCartAll = function(name) {
-for(var item in cart) {
-  if(cart[item].name === name) {
-    cart.splice(item, 1);
-    break;
-  }
-}
-saveCart();
-}
-
-// Clear cart
-obj.clearCart = function() {
-cart = [];
-saveCart();
-}
-
-// Count cart 
-obj.totalCount = function() {
-var totalCount = 0;
-for(var item in cart) {
-  totalCount += cart[item].count;
-}
-return totalCount;
-}
-
-// Total cart
-obj.totalCart = function() {
-var totalCart = 0;
-for(var item in cart) {
-  totalCart += cart[item].price * cart[item].count;
-}
-return Number(totalCart.toFixed(2));
-}
-
-// List cart
-obj.listCart = function() {
-var cartCopy = [];
-for(i in cart) {
-  item = cart[i];
-  itemCopy = {};
-  for(p in item) {
-    itemCopy[p] = item[p];
-
-  }
-  itemCopy.total = Number(item.price * item.count).toFixed(2);
-  cartCopy.push(itemCopy)
-}
-return cartCopy;
-}
-*/
-
-
-
+        updateHome();
 
  </script> 
 </html>

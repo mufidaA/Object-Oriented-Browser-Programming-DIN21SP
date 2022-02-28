@@ -194,6 +194,7 @@
           clearCart.style.cursor= "pointer"; 
           order = document.createElement("button") ;
           order.innerHTML = "Order";
+          order.addEventListener("click", function () {alert("Thanks for your Order!");});
           btn.appendChild(order);
           order.style.border="2px solid #4CAF50";
           order.style.backgroundColor="black";
